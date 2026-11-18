@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>归因控制台 · Attribution Console</title>
+  <meta name="description" content="多渠道营销归因分析：末次触点、线性、时间衰减，版本与快照锁定。" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232a78d6'/%3E%3Cpath d='M8 22 L14 15 L19 19 L24 10' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">归因</div>
+      <div>
+        <div class="brand-title">归因控制台</div>
+        <div class="brand-sub">Attribution Console</div>
+      </div>
+    </div>
+
+    <div class="topbar-context" id="context-controls" hidden>
+      <label class="field">
+        <span>输入快照</span>
+        <select id="snapshot-select" aria-label="选择输入快照"></select>
+      </label>
+      <label class="field">
+        <span>当前结果（已锁定）</span>
+        <select id="run-select" aria-label="选择归因结果"></select>
+      </label>
+    </div>
+
+    <div class="topbar-right">
+      <button class="btn small" id="new-run-button" type="button" hidden>＋ 新建运行</button>
+      <button class="btn small" id="logout-button" type="button" hidden>退出</button>
+      <button class="btn small ghost" id="theme-toggle" type="button" aria-label="切换深色 / 浅色主题">◐ 主题</button>
+      <div class="user-pill" id="user-pill">
+        <div class="avatar" id="user-avatar" aria-hidden="true">?</div>
+        <div>
+          <div id="user-name" class="small">未登录</div>
+          <div class="user-meta" id="user-role">选择演示身份</div>
+        </div>
+        <select id="user-select" aria-label="切换演示用户"></select>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="分析视图"></nav>
+
+  <main id="main" aria-live="polite">
+    <div class="card"><p class="muted">正在加载…</p></div>
+  </main>
+
+  <div id="tooltip" role="status" aria-live="off"></div>
+  <div id="toast" aria-live="polite"></div>
+
+  <dialog id="login-dialog" aria-labelledby="login-title">
+    <div class="dialog-head">
+      <div>
+        <h2 id="login-title">选择演示身份</h2>
+        <p>不同角色决定可执行的操作与可导出的格式。</p>
+      </div>
+    </div>
+    <div class="dialog-body" id="login-body"></div>
+  </dialog>
+
+  <dialog id="run-dialog" aria-labelledby="run-dialog-title">
+    <div class="dialog-head">
+      <div>
+        <h2 id="run-dialog-title">新建归因运行</h2>
+        <p>运行会绑定当前快照与模型版本；同参数重复运行直接复用，不覆盖历史。</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost small" type="button" data-close-dialog="run-dialog" aria-label="关闭">✕</button>
+    </div>
+    <form id="run-form" method="dialog">
+      <div class="dialog-body">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="rf-model">模型</label>
+            <select id="rf-model" name="model_id"></select>
+          </div>
+          <div class="form-field">
+            <label for="rf-version">模型版本</label>
+            <select id="rf-version" name="model_version"></select>
+          </div>
+          <div class="form-field full">
+            <label for="rf-label">运行名称</label>
+            <input id="rf-label" name="label" type="text" autocomplete="off" placeholder="例如：Q4 基线 · 线性 30 天" />
+          </div>
+          <div class="form-field">
+            <label for="rf-refund">退款处理</label>
+            <select id="rf-refund" name="refund_policy"></select>
+          </div>
+          <div class="form-field">
+            <label for="rf-supersedes">替代旧运行（可选）</label>
+            <select id="rf-supersedes" name="supersedes"></select>
+          </div>
+        </div>
+        <div id="rf-params"></div>
+        <div class="tip" id="rf-hint" style="margin-top:16px">
+          <span class="tip-icon" aria-hidden="true">ⓘ</span>
+          <div>参数、输入快照与模型版本会被写入结果指纹；之后任何改动都只会生成新结果。</div>
+        </div>
+      </div>
+      <div class="dialog-foot">
+        <span class="hint" id="rf-foot-hint"></span>
+        <button class="btn" type="button" data-close-dialog="run-dialog">取消</button>
+        <button class="btn primary" type="submit" id="rf-submit">运行并锁定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="export-dialog" aria-labelledby="export-title">
+    <div class="dialog-head">
+      <div>
+        <h2 id="export-title">导出</h2>
+        <p id="export-sub">导出内容包含快照、模型版本与参数指纹，便于复核。</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost small" type="button" data-close-dialog="export-dialog" aria-label="关闭">✕</button>
+    </div>
+    <div class="dialog-body" id="export-body"></div>
+  </dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

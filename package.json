@@ -1,0 +1,16 @@
+{
+  "name": "attribution-console",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "营销归因分析应用：末次触点 / 线性 / 时间衰减三种模型，固定版本与输入快照，支持贡献迁移、敏感性与导出。",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "dev": "node --watch src/server/index.js",
+    "seed": "node src/server/seed.js",
+    "test": "node --test 'test/*.test.js'"
+  }
+}
